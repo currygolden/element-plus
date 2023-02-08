@@ -4,6 +4,7 @@ import type Alert from './alert.vue'
 
 export const alertEffects = ['light', 'dark'] as const
 
+// buildProps 拓展了props的类型
 export const alertProps = buildProps({
   title: {
     type: String,

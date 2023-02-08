@@ -19,6 +19,8 @@ export function useGlobalConfig<
   defaultValue?: D
 ): Ref<Exclude<ConfigProviderContext[K], undefined> | D>
 export function useGlobalConfig(): Ref<ConfigProviderContext>
+
+// inject获取provide的值，并包装成计算属性
 export function useGlobalConfig(
   key?: keyof ConfigProviderContext,
   defaultValue = undefined

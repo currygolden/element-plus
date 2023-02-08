@@ -3,6 +3,7 @@ import { NOOP } from '@vue/shared'
 import type { App } from 'vue'
 import type { SFCInstallWithContext, SFCWithInstall } from './typescript'
 
+// 注册组件，提供install方法
 export const withInstall = <T, E extends Record<string, any>>(
   main: T,
   extra?: E

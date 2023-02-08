@@ -27,11 +27,14 @@ const props = defineProps(affixProps)
 const emit = defineEmits(affixEmits)
 
 const ns = useNamespace('affix')
-
+// 只有对 .value 的访问是响应式的,不会深层触发响应观测
 const target = shallowRef<HTMLElement>()
 const root = shallowRef<HTMLDivElement>()
 const scrollContainer = shallowRef<HTMLElement | Window>()
+
 const { height: windowHeight } = useWindowSize()
+
+// 元素节点的距离属性
 const {
   height: rootHeight,
   width: rootWidth,
@@ -41,6 +44,7 @@ const {
 } = useElementBounding(root)
 const targetRect = useElementBounding(target)
 
+// 定义data
 const fixed = ref(false)
 const scrollTop = ref(0)
 const transform = ref(0)
@@ -108,6 +112,7 @@ const handleScroll = () => {
 watch(fixed, (val) => emit('change', val))
 
 onMounted(() => {
+  // 获取 target 定位元素
   if (props.target) {
     target.value =
       document.querySelector<HTMLElement>(props.target) ?? undefined
@@ -123,6 +128,7 @@ onMounted(() => {
 useEventListener(scrollContainer, 'scroll', handleScroll)
 watchEffect(update)
 
+// 通过模板引用的方式获取到当前组件的实例，可获取的属性
 defineExpose({
   /** @description update affix status */
   update,

@@ -2,7 +2,7 @@
   "name": "@element-plus/docs",
   "private": true,
   "scripts": {
-    "dev": "pnpm gen-locale && vitepress dev .",
+    "dev": "pnpm gen-locale && vitepress dev ./",
     "build": "cross-env NODE_ENV=production && vitepress build . && tsx .vitepress/build/rebuild-pwa.ts",
     "serve": "cross-env NODE_ENV=production vitepress serve . --port 5001",
     "gen-locale": "rimraf .vitepress/i18n && tsx .vitepress/build/crowdin-generate.ts",

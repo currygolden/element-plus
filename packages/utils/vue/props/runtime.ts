@@ -17,6 +17,7 @@ import type {
 
 export const epPropKey = '__epPropKey'
 
+// 约束为PropType
 export const definePropType = <T>(val: any): PropType<T> => val
 
 export const isEpProp = (val: unknown): val is EpProp<any, any, any> =>
