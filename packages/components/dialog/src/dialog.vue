@@ -1,4 +1,5 @@
 <template>
+  <!-- 使用teleport可以动态指定挂载点 -->
   <teleport to="body" :disabled="!appendToBody">
     <transition
       name="dialog-fade"

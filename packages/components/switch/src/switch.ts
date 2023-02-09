@@ -17,6 +17,8 @@ import type Switch from './switch.vue'
 import type { ExtractPropTypes, PropType } from 'vue'
 
 export const switchProps = buildProps({
+  // 输入，与@update:modelValue搭配使用构成双向
+  // 组件库为什么支持v-model呢，是由于已经做了前面的双向封装
   modelValue: {
     type: [Boolean, String, Number],
     default: false,

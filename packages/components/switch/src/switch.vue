@@ -117,6 +117,7 @@ defineOptions({
   name: 'ElSwitch',
 })
 
+// 这里控制了组件的输入与输出
 const props = defineProps(switchProps)
 const emit = defineEmits(switchEmits)
 
@@ -125,6 +126,7 @@ const { formItem } = useFormItem()
 const switchSize = useSize()
 const ns = useNamespace('switch')
 
+// 废弃api管理
 useDeprecated(
   {
     from: '"value"',
@@ -163,14 +165,14 @@ watch(
     isControlled.value = true
   }
 )
-
+// 提供value值，则代表组件非可控制
 watch(
   () => props.value,
   () => {
     isControlled.value = false
   }
 )
-
+// 是否可控取值目标不一样
 const actualValue = computed(() => {
   return isControlled.value ? props.modelValue : props.value
 })
@@ -201,6 +203,7 @@ const handleChange = () => {
   })
 }
 
+// 支持change之前的异步操作
 const switchValue = () => {
   if (switchDisabled.value) return
 
@@ -254,6 +257,7 @@ onMounted(() => {
   input.value!.checked = checked.value
 })
 
+// 组件实例暴露的属性
 defineExpose({
   /**
    *  @description manual focus to the switch component

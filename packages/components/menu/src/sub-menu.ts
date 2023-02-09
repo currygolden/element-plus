@@ -33,7 +33,7 @@ import type { Placement } from '@element-plus/components/popper'
 import type { CSSProperties, ExtractPropTypes, VNodeArrayChildren } from 'vue'
 import type { MenuProvider, SubMenuProvider } from './types'
 
-export const subMenuProps = buildProps({
+export const subMenuProps: any = buildProps({
   index: {
     type: String,
     required: true,
@@ -70,8 +70,8 @@ export const subMenuProps = buildProps({
   },
 } as const)
 export type SubMenuProps = ExtractPropTypes<typeof subMenuProps>
-
 const COMPONENT_NAME = 'ElSubMenu'
+
 export default defineComponent({
   name: COMPONENT_NAME,
   props: subMenuProps,

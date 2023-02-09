@@ -115,7 +115,7 @@ function checkFull(el: InfiniteScrollEl, cb: InfiniteScrollCallback) {
     destroyObserver(el)
   }
 }
-
+// 一个自定义指令由一个包含类似组件生命周期钩子的对象来定义
 const InfiniteScroll: ObjectDirective<
   InfiniteScrollEl,
   InfiniteScrollCallback

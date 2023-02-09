@@ -32,7 +32,9 @@ import type { NavigationFailure, Router } from 'vue-router'
 import type { ExtractPropTypes, VNode, VNodeNormalizedChildren } from 'vue'
 import type { UseResizeObserverReturn } from '@vueuse/core'
 
+// props不可修改，控制单向流动
 export const menuProps = buildProps({
+  // 横向/竖向
   mode: {
     type: String,
     values: ['horizontal', 'vertical'],
@@ -66,11 +68,13 @@ export const menuProps = buildProps({
     default: true,
   },
 } as const)
+// 定义类型
 export type MenuProps = ExtractPropTypes<typeof menuProps>
 
 const checkIndexPath = (indexPath: unknown): indexPath is string[] =>
   Array.isArray(indexPath) && indexPath.every((path) => isString(path))
 
+// 定义全部的事件类型
 export const menuEmits = {
   close: (index: string, indexPath: string[]) =>
     isString(index) && checkIndexPath(indexPath),
@@ -91,15 +95,19 @@ export const menuEmits = {
 }
 export type MenuEmits = typeof menuEmits
 
+// 提供类型推导，选项式api
 export default defineComponent({
   name: 'ElMenu',
 
   props: menuProps,
   emits: menuEmits,
-
+  // 在 setup() 函数中返回的对象会暴露给模板和组件实例,好像不写template的场景会这么用
+  // props解构会丢失响应，除非torefs(props), context是可解构的
   setup(props, { emit, slots, expose }) {
     const instance = getCurrentInstance()!
+    // instance.appContext 是app实例，这里是全局组件可访问的属性类似this.$root
     const router = instance.appContext.config.globalProperties.$router as Router
+    // 返回一个响应式的、可更改的 ref 对象，.value访问
     const menu = ref<HTMLUListElement>()
     const nsMenu = useNamespace('menu')
     const nsSubMenu = useNamespace('sub-menu')
@@ -216,8 +224,10 @@ export default defineComponent({
       }
     }
 
+    // 根据实际宽度计算可展示数据索引
     const calcSliceIndex = () => {
       if (!menu.value) return -1
+      // 获取非文本节点
       const items = Array.from(menu.value?.childNodes ?? []).filter(
         (item) => item.nodeName !== '#text' || item.nodeValue
       ) as HTMLElement[]
@@ -287,9 +297,11 @@ export default defineComponent({
 
     let resizeStopper: UseResizeObserverReturn['stop']
     watchEffect(() => {
-      if (props.mode === 'horizontal' && props.ellipsis)
+      if (props.mode === 'horizontal' && props.ellipsis) {
         resizeStopper = useResizeObserver(menu, handleResize).stop
-      else resizeStopper?.()
+      } else {
+        resizeStopper?.()
+      }
     })
 
     // provide
@@ -309,6 +321,7 @@ export default defineComponent({
       const removeMenuItem: MenuProvider['removeMenuItem'] = (item) => {
         delete items.value[item.index]
       }
+      // 实际的多层级组件参数传递用到了provide
       provide<MenuProvider>(
         'rootMenu',
         reactive({
@@ -355,7 +368,7 @@ export default defineComponent({
         handleResize,
       })
     }
-
+    // slot嵌套数组扁平化
     const flattedChildren = (children: VNodeNormalizedChildren) => {
       const vnodes = Array.isArray(children) ? children : [children]
       const result: any[] = []
@@ -368,18 +381,19 @@ export default defineComponent({
       })
       return result
     }
-
+    // jsx形式描述组件,这里获取的是vnode
     return () => {
       let slot = slots.default?.() ?? []
       const vShowMore: VNode[] = []
-
+      // 处理横向超出的vnode
       if (props.mode === 'horizontal' && menu.value) {
         const originalSlot = flattedChildren(slot)
+        // 展示的部分
         const slotDefault =
           sliceIndex.value === -1
             ? originalSlot
             : originalSlot.slice(0, sliceIndex.value)
-
+        // 隐藏的部分
         const slotMore =
           sliceIndex.value === -1 ? [] : originalSlot.slice(sliceIndex.value)
 
@@ -392,6 +406,7 @@ export default defineComponent({
                 index: 'sub-menu-more',
                 class: nsSubMenu.e('hide-arrow'),
               },
+              // h函数处理组件有点不一样
               {
                 title: () =>
                   h(
@@ -425,7 +440,7 @@ export default defineComponent({
         },
         [...slot, ...vShowMore]
       )
-
+      // 垂直方向添加动画组件包裹
       if (props.collapseTransition && props.mode === 'vertical') {
         return h(ElMenuCollapseTransition, () => vMenu)
       }
